@@ -1,4 +1,10 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+<?php
+/**
+ * @var array $clients
+ * @var array $developers
+ */
+require_once __DIR__ . '/../layout/header.php';
+?>
 
 <div class="page-header">
     <div class="page-title">
@@ -22,7 +28,7 @@
                     <label class="form-label" for="select-client">Bank Klien *</label>
                     <select id="select-client" class="form-control" required>
                         <option value="">-- Pilih Bank Klien --</option>
-                        <?php foreach ($clients as $c): ?>
+                        <?php foreach ($clients ?? [] as $c): ?>
                             <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['client_name']) ?> (<?= $c['client_code'] ?>)</option>
                         <?php endforeach; ?>
                     </select>
@@ -80,7 +86,7 @@
                     <label class="form-label" for="dev_id">Penugasan PIC Developer</label>
                     <select name="dev_id" id="dev_id" class="form-control">
                         <option value="">-- Pilih PIC Developer --</option>
-                        <?php foreach ($developers as $dev): ?>
+                        <?php foreach ($developers ?? [] as $dev): ?>
                             <option value="<?= $dev['id'] ?>"><?= htmlspecialchars($dev['name']) ?></option>
                         <?php endforeach; ?>
                     </select>

@@ -1,4 +1,17 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+<?php
+/**
+ * @var int $newOpenToday
+ * @var int $readyForRetest
+ * @var int $reopenedToday
+ * @var int $closedToday
+ * @var int $totalOutstanding
+ * @var array $statusCounts
+ * @var array $severityCounts
+ * @var array $clientStats
+ * @var array $recentActivities
+ */
+require_once __DIR__ . '/../layout/header.php';
+?>
 
 <div class="page-header">
     <div class="page-title">
@@ -22,7 +35,7 @@
     <div class="metric-card open">
         <div class="metric-label">New Open Today</div>
         <div class="metric-val">
-            <?= $newOpenToday ?>
+            <?= $newOpenToday ?? 0 ?>
         </div>
         <div class="metric-sub">Defect dilaporkan hari ini</div>
     </div>
@@ -30,7 +43,7 @@
     <div class="metric-card retest">
         <div class="metric-label">Ready for Retest</div>
         <div class="metric-val">
-            <?= $readyForRetest ?>
+            <?= $readyForRetest ?? 0 ?>
         </div>
         <div class="metric-sub">Menunggu verifikasi QC</div>
     </div>
@@ -38,7 +51,7 @@
     <div class="metric-card reopen">
         <div class="metric-label">Re-opened Today</div>
         <div class="metric-val">
-            <?= $reopenedToday ?>
+            <?= $reopenedToday ?? 0 ?>
         </div>
         <div class="metric-sub">Gagal verifikasi / regresi</div>
     </div>
@@ -46,7 +59,7 @@
     <div class="metric-card close">
         <div class="metric-label">Closed Today</div>
         <div class="metric-val">
-            <?= $closedToday ?>
+            <?= $closedToday ?? 0 ?>
         </div>
         <div class="metric-sub">Selesai diperbaiki & lolos uji</div>
     </div>
@@ -54,7 +67,7 @@
     <div class="metric-card total">
         <div class="metric-label">Total Outstanding</div>
         <div class="metric-val" style="color: #f59e0b;">
-            <?= $totalOutstanding ?>
+            <?= $totalOutstanding ?? 0 ?>
         </div>
         <div class="metric-sub">Akumulasi tiket aktif (Open+Retest+Reopen)</div>
     </div>
@@ -105,7 +118,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($clientStats as $cs): ?>
+                    <?php foreach ($clientStats ?? [] as $cs): ?>
                         <tr>
                             <td>
                                 <strong style="color: #fff;"><?= htmlspecialchars($cs['client_name']) ?></strong>
@@ -133,7 +146,7 @@
             <span style="font-size: 0.75rem; color: #34d399; font-weight: 600;">Live</span>
         </div>
         <div class="timeline" style="margin-top: 0.5rem; max-height: 420px; overflow-y: auto; padding-right: 0.5rem;">
-            <?php foreach ($recentActivities as $act): ?>
+            <?php foreach ($recentActivities ?? [] as $act): ?>
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
@@ -165,10 +178,10 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Open', 'Retesting', 'Re-open', 'Close'],
             datasets: [{
                 data: [
-                    <?= $statusCounts['Open'] ?>,
-                    <?= $statusCounts['Retesting'] ?>,
-                    <?= $statusCounts['Re-open'] ?>,
-                    <?= $statusCounts['Close'] ?>
+                    <?= (int)($statusCounts['Open'] ?? 0) ?>,
+                    <?= (int)($statusCounts['Retesting'] ?? 0) ?>,
+                    <?= (int)($statusCounts['Re-open'] ?? 0) ?>,
+                    <?= (int)($statusCounts['Close'] ?? 0) ?>
                 ],
                 backgroundColor: ['#3b82f6', '#a855f7', '#ef4444', '#10b981'],
                 borderWidth: 0
@@ -191,10 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
             datasets: [{
                 label: 'Jumlah Defect Aktif',
                 data: [
-                    <?= $severityCounts['Blocker'] ?>,
-                    <?= $severityCounts['High'] ?>,
-                    <?= $severityCounts['Medium'] ?>,
-                    <?= $severityCounts['Low'] ?>
+                    <?= (int)($severityCounts['Blocker'] ?? 0) ?>,
+                    <?= (int)($severityCounts['High'] ?? 0) ?>,
+                    <?= (int)($severityCounts['Medium'] ?? 0) ?>,
+                    <?= (int)($severityCounts['Low'] ?? 0) ?>
                 ],
                 backgroundColor: ['#dc2626', '#f97316', '#eab308', '#64748b'],
                 borderRadius: 6

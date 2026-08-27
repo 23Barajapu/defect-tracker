@@ -34,7 +34,7 @@ Developed for **PT Sarana Pactindo**, this system eliminates communication bottl
 
 ## Directory Structure
 
-```
+```text
 SISTEM-PKL/
 ├── app/
 │   ├── Controllers/
@@ -74,26 +74,31 @@ SISTEM-PKL/
 ## Installation & Setup
 
 ### 1. Prerequisites
+
 - PHP 8.1 or higher (with `pdo_mysql`, `mbstring`, `json`, `curl` extensions enabled)
 - MySQL / MariaDB Server (Port 3306)
 - Apache Web Server (with `mod_rewrite` enabled)
 - Laragon, XAMPP, or Docker environment
 
 ### 2. Clone Repository
+
 ```bash
 git clone https://github.com/23Barajapu/defect-tracker.git
 cd defect-tracker
 ```
 
 ### 3. Database Configuration & Migration
+
 Ensure MySQL is running on `127.0.0.1:3306` (default credentials `root` with empty password). To adjust credentials, edit `config/database.php`.
 
 Run the automated migration and seed runner:
+
 ```bash
 php database/migrate.php
 ```
 
 ### 4. Web Server Routing
+
 - **Laragon / Local Apache**: Point document root to the project directory or access directly via `http://localhost/SISTEM-PKL/public/` (or `http://sistem-pkl.test/`).
 
 ---
@@ -120,6 +125,7 @@ php tests/test_system.php
 ```
 
 Sample output:
+
 ```text
 === STARTING AUTOMATED VERIFICATION ===
  [PASS] Database Connection OK

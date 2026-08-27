@@ -1,24 +1,29 @@
 <?php 
+/**
+ * @var array $defect
+ * @var array $activities
+ * @var array $developers
+ */
 require_once __DIR__ . '/../layout/header.php';
 $userRole = Auth::role();
 $userId = Auth::id();
-$isDevPic = ($defect['dev_id'] == $userId);
-$isQcReporter = ($defect['qc_id'] == $userId);
+$isDevPic = (!empty($defect['dev_id']) && $defect['dev_id'] == $userId);
+$isQcReporter = (!empty($defect['qc_id']) && $defect['qc_id'] == $userId);
 ?>
 
 <div class="page-header">
     <div>
         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
-            <h2 style="font-family: monospace; font-size: 1.5rem; color: #60a5fa;"><?= htmlspecialchars($defect['ticket_number']) ?></h2>
-            <span class="badge badge-<?= $defect['status'] ?>"><?= $defect['status'] ?></span>
-            <span class="sev-badge sev-<?= $defect['severity'] ?>"><?= $defect['severity'] ?></span>
-            <?php if ($defect['reopen_count'] > 0): ?>
+            <h2 style="font-family: monospace; font-size: 1.5rem; color: #60a5fa;"><?= htmlspecialchars($defect['ticket_number'] ?? '') ?></h2>
+            <span class="badge badge-<?= $defect['status'] ?? 'Open' ?>"><?= $defect['status'] ?? 'Open' ?></span>
+            <span class="sev-badge sev-<?= $defect['severity'] ?? 'Medium' ?>"><?= $defect['severity'] ?? 'Medium' ?></span>
+            <?php if (!empty($defect['reopen_count']) && $defect['reopen_count'] > 0): ?>
                 <span style="font-size: 0.75rem; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 2px 8px; border-radius: 4px; font-weight: 700;">
                     Re-opened <?= $defect['reopen_count'] ?>x
                 </span>
             <?php endif; ?>
         </div>
-        <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff;"><?= htmlspecialchars($defect['title']) ?></h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff;"><?= htmlspecialchars($defect['title'] ?? '') ?></h3>
     </div>
     <a href="/defects" class="btn btn-secondary">
         &larr; Kembali
@@ -34,19 +39,19 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 1rem; margin-bottom: 1rem;">
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">BANK KLIEN</div>
-                    <div style="font-weight: 700; color: #fff; font-size: 0.95rem;"><?= htmlspecialchars($defect['client_name']) ?></div>
+                    <div style="font-weight: 700; color: #fff; font-size: 0.95rem;"><?= htmlspecialchars($defect['client_name'] ?? '') ?></div>
                 </div>
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">PROYEK / PLATFORM</div>
-                    <div style="font-weight: 600; color: #cbd5e1;"><?= htmlspecialchars($defect['project_name']) ?> (<?= htmlspecialchars($defect['platform']) ?>)</div>
+                    <div style="font-weight: 600; color: #cbd5e1;"><?= htmlspecialchars($defect['project_name'] ?? '') ?> (<?= htmlspecialchars($defect['platform'] ?? '') ?>)</div>
                 </div>
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">MODUL FUNGSIONAL</div>
-                    <div style="font-weight: 600; color: #cbd5e1;"><?= htmlspecialchars($defect['module_name']) ?></div>
+                    <div style="font-weight: 600; color: #cbd5e1;"><?= htmlspecialchars($defect['module_name'] ?? '') ?></div>
                 </div>
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">ENVIRONMENT</div>
-                    <div style="font-weight: 600; color: #38bdf8;"><?= htmlspecialchars($defect['environment']) ?></div>
+                    <div style="font-weight: 600; color: #38bdf8;"><?= htmlspecialchars($defect['environment'] ?? '') ?></div>
                 </div>
             </div>
 
@@ -54,7 +59,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             <div style="margin-bottom: 1.25rem;">
                 <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.35rem;">Deskripsi Kesalahan</h4>
                 <div style="font-size: 0.92rem; color: #e2e8f0; white-space: pre-line; background: rgba(15,23,42,0.5); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-                    <?= htmlspecialchars($defect['description']) ?>
+                    <?= htmlspecialchars($defect['description'] ?? '') ?>
                 </div>
             </div>
 
@@ -72,13 +77,13 @@ $isQcReporter = ($defect['qc_id'] == $userId);
                     <div>
                         <h4 style="font-size: 0.8rem; text-transform: uppercase; color: #34d399; margin-bottom: 0.35rem;">Expected Result</h4>
                         <div style="font-size: 0.85rem; color: #cbd5e1; background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); padding: 0.75rem; border-radius: 8px;">
-                            <?= htmlspecialchars($defect['expected_result']) ?>
+                            <?= htmlspecialchars($defect['expected_result'] ?? '') ?>
                         </div>
                     </div>
                     <div>
                         <h4 style="font-size: 0.8rem; text-transform: uppercase; color: #f87171; margin-bottom: 0.35rem;">Actual Result</h4>
                         <div style="font-size: 0.85rem; color: #cbd5e1; background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); padding: 0.75rem; border-radius: 8px;">
-                            <?= htmlspecialchars($defect['actual_result']) ?>
+                            <?= htmlspecialchars($defect['actual_result'] ?? '') ?>
                         </div>
                     </div>
                 </div>
@@ -100,10 +105,10 @@ $isQcReporter = ($defect['qc_id'] == $userId);
         <div class="card">
             <div class="card-header">
                 <span class="card-title">Audit Trail & Riwayat Siklus Status (FR-05)</span>
-                <span style="font-size: 0.78rem; color: var(--text-dim);"><?= count($activities) ?> Riwayat Aktivitas</span>
+                <span style="font-size: 0.78rem; color: var(--text-dim);"><?= count($activities ?? []) ?> Riwayat Aktivitas</span>
             </div>
             <div class="timeline" style="margin-top: 1rem;">
-                <?php foreach ($activities as $act): ?>
+                <?php foreach ($activities ?? [] as $act): ?>
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
@@ -165,9 +170,9 @@ $isQcReporter = ($defect['qc_id'] == $userId);
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">QC REPORTER</div>
                     <div style="font-weight: 700; color: #fff; font-size: 0.92rem; margin-top: 2px;">
-                        <?= htmlspecialchars($defect['qc_name']) ?>
+                        <?= htmlspecialchars($defect['qc_name'] ?? '') ?>
                     </div>
-                    <div style="font-size: 0.78rem; color: var(--text-dim);"><?= htmlspecialchars($defect['qc_email']) ?></div>
+                    <div style="font-size: 0.78rem; color: var(--text-dim);"><?= htmlspecialchars($defect['qc_email'] ?? '') ?></div>
                 </div>
 
                 <div>
@@ -182,12 +187,12 @@ $isQcReporter = ($defect['qc_id'] == $userId);
 
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">WAKTU DIBUAT</div>
-                    <div style="font-size: 0.82rem; color: #cbd5e1;"><?= date('d M Y, H:i', strtotime($defect['created_at'])) ?></div>
+                    <div style="font-size: 0.82rem; color: #cbd5e1;"><?= !empty($defect['created_at']) ? date('d M Y, H:i', strtotime($defect['created_at'])) : '-' ?></div>
                 </div>
 
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-dim);">TERAKHIR DIPERBARUI</div>
-                    <div style="font-size: 0.82rem; color: #cbd5e1;"><?= date('d M Y, H:i', strtotime($defect['updated_at'])) ?></div>
+                    <div style="font-size: 0.82rem; color: #cbd5e1;"><?= !empty($defect['updated_at']) ? date('d M Y, H:i', strtotime($defect['updated_at'])) : '-' ?></div>
                 </div>
             </div>
         </div>
@@ -200,11 +205,11 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             </div>
 
             <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                Status saat ini: <strong style="color: #fff;"><?= $defect['status'] ?></strong>. Sesuai aturan RBAC PRD, tombol aksi berikut tersedia:
+                Status saat ini: <strong style="color: #fff;"><?= $defect['status'] ?? 'Open' ?></strong>. Sesuai aturan RBAC PRD, tombol aksi berikut tersedia:
             </p>
 
             <!-- Aksi untuk Developer -->
-            <?php if (in_array($defect['status'], ['Open', 'Re-open']) && (Auth::hasRole(['DEVELOPER', 'LEAD', 'PM']))): ?>
+            <?php if (!empty($defect['status']) && in_array($defect['status'], ['Open', 'Re-open']) && (Auth::hasRole(['DEVELOPER', 'LEAD', 'PM']))): ?>
                 <button type="button" class="btn btn-purple" style="width: 100%; justify-content: center; margin-bottom: 0.75rem;" onclick="openModal('modal-retest')">
                     Submit Fix & Mark 'Retesting'
                 </button>
@@ -214,7 +219,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             <?php endif; ?>
 
             <!-- Aksi untuk QC Tester saat Retesting -->
-            <?php if ($defect['status'] === 'Retesting' && (Auth::hasRole(['QC', 'LEAD', 'PM']))): ?>
+            <?php if (!empty($defect['status']) && $defect['status'] === 'Retesting' && (Auth::hasRole(['QC', 'LEAD', 'PM']))): ?>
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <button type="button" class="btn btn-success" style="width: 100%; justify-content: center;" onclick="openModal('modal-close')">
                         Verifikasi Sukses (Verify & Close)
@@ -229,7 +234,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             <?php endif; ?>
 
             <!-- Status Closed -->
-            <?php if ($defect['status'] === 'Close'): ?>
+            <?php if (!empty($defect['status']) && $defect['status'] === 'Close'): ?>
                 <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem; border-radius: 8px; text-align: center;">
                     <div style="font-weight: 700; color: #34d399; font-size: 0.9rem;">Defect Telah Selesai (Closed)</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
@@ -260,7 +265,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             Submit Perbaikan Defect (Retesting)
         </h3>
         <form action="/defects/status" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?>">
+            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?? 0 ?>">
             <input type="hidden" name="to_status" value="Retesting">
 
             <div class="form-group">
@@ -299,7 +304,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             Verifikasi Berhasil & Tutup Tiket (Close)
         </h3>
         <form action="/defects/status" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?>">
+            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?? 0 ?>">
             <input type="hidden" name="to_status" value="Close">
 
             <div class="form-group">
@@ -327,7 +332,7 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             Retest Gagal / Ditemukan Regresi (Re-open)
         </h3>
         <form action="/defects/status" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?>">
+            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?? 0 ?>">
             <input type="hidden" name="to_status" value="Re-open">
 
             <div class="form-group">
@@ -356,15 +361,15 @@ $isQcReporter = ($defect['qc_id'] == $userId);
             Lead / PM Override Control
         </h3>
         <form action="/defects/status" method="POST">
-            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?>">
+            <input type="hidden" name="defect_id" value="<?= $defect['id'] ?? 0 ?>">
 
             <div class="form-group">
                 <label class="form-label">Paksa Ubah Status Menjadi</label>
                 <select name="to_status" class="form-control" required>
-                    <option value="Open" <?= $defect['status'] === 'Open' ? 'selected' : '' ?>>Open</option>
-                    <option value="Retesting" <?= $defect['status'] === 'Retesting' ? 'selected' : '' ?>>Retesting</option>
-                    <option value="Re-open" <?= $defect['status'] === 'Re-open' ? 'selected' : '' ?>>Re-open</option>
-                    <option value="Close" <?= $defect['status'] === 'Close' ? 'selected' : '' ?>>Close</option>
+                    <option value="Open" <?= ($defect['status'] ?? '') === 'Open' ? 'selected' : '' ?>>Open</option>
+                    <option value="Retesting" <?= ($defect['status'] ?? '') === 'Retesting' ? 'selected' : '' ?>>Retesting</option>
+                    <option value="Re-open" <?= ($defect['status'] ?? '') === 'Re-open' ? 'selected' : '' ?>>Re-open</option>
+                    <option value="Close" <?= ($defect['status'] ?? '') === 'Close' ? 'selected' : '' ?>>Close</option>
                 </select>
             </div>
 
@@ -372,8 +377,8 @@ $isQcReporter = ($defect['qc_id'] == $userId);
                 <label class="form-label">Reassign PIC Developer</label>
                 <select name="reassign_dev_id" class="form-control">
                     <option value="">-- Tetap Developer Saat Ini --</option>
-                    <?php foreach ($developers as $dev): ?>
-                        <option value="<?= $dev['id'] ?>" <?= $defect['dev_id'] == $dev['id'] ? 'selected' : '' ?>>
+                    <?php foreach ($developers ?? [] as $dev): ?>
+                        <option value="<?= $dev['id'] ?>" <?= (!empty($defect['dev_id']) && $defect['dev_id'] == $dev['id']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($dev['name']) ?>
                         </option>
                     <?php endforeach; ?>

@@ -1,4 +1,10 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+<?php 
+/**
+ * @var array $clients
+ * @var array $defects
+ */
+require_once __DIR__ . '/../layout/header.php';
+?>
 
 <div class="page-header">
     <div class="page-title">
@@ -24,7 +30,7 @@
             <label class="form-label" style="margin-bottom: 0.25rem;">Bank Klien</label>
             <select name="client_id" class="form-control">
                 <option value="">Semua Bank Klien</option>
-                <?php foreach ($clients as $c): ?>
+                <?php foreach ($clients ?? [] as $c): ?>
                     <option value="<?= $c['id'] ?>" <?= (int)($_GET['client_id'] ?? 0) === (int)$c['id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($c['client_name']) ?>
                     </option>
@@ -116,7 +122,7 @@
                                 <span class="badge badge-<?= $d['status'] ?>">
                                     <?= $d['status'] ?>
                                 </span>
-                                <?php if ($d['reopen_count'] > 0): ?>
+                                <?php if (!empty($d['reopen_count']) && $d['reopen_count'] > 0): ?>
                                     <div style="font-size: 0.68rem; color: #ef4444; margin-top: 2px; font-weight: 700;">
                                         (Re-open #<?= $d['reopen_count'] ?>)
                                     </div>

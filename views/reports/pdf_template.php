@@ -1,3 +1,15 @@
+<?php
+/**
+ * @var string $selectedDate
+ * @var int $clientId
+ * @var string $clientName
+ * @var array $defects
+ */
+$selectedDate = $selectedDate ?? date('Y-m-d');
+$clientId = $clientId ?? 0;
+$clientName = $clientName ?? 'Semua Bank Klien';
+$defects = $defects ?? [];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -288,7 +300,7 @@
                         </td>
                         <td>
                             <?= htmlspecialchars($d['title']) ?>
-                            <?php if ($d['reopen_count'] > 0): ?>
+                            <?php if (!empty($d['reopen_count']) && $d['reopen_count'] > 0): ?>
                                 <span style="color: #dc2626; font-weight: bold; font-size: 7pt;">(Reopen #<?= $d['reopen_count'] ?>)</span>
                             <?php endif; ?>
                         </td>

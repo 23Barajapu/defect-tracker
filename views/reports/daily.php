@@ -1,4 +1,19 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+<?php 
+/**
+ * @var string $selectedDate
+ * @var int $clientId
+ * @var array $clients
+ * @var array $defects
+ * @var int $metricOpen
+ * @var int $metricRetest
+ * @var int $metricReopen
+ * @var int $metricClose
+ * @var int $metricBlocker
+ */
+require_once __DIR__ . '/../layout/header.php';
+$selectedDate = $selectedDate ?? date('Y-m-d');
+$clientId = $clientId ?? 0;
+?>
 
 <div class="page-header">
     <div class="page-title">
@@ -27,7 +42,7 @@
             <label class="form-label" style="margin-bottom: 0.25rem;">Pilih Bank Klien</label>
             <select name="client_id" class="form-control">
                 <option value="">Semua Bank Klien (Multi-Bank Aggregate)</option>
-                <?php foreach ($clients as $c): ?>
+                <?php foreach ($clients ?? [] as $c): ?>
                     <option value="<?= $c['id'] ?>" <?= $clientId === (int)$c['id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($c['client_name']) ?> (<?= $c['client_code'] ?>)
                     </option>
@@ -60,23 +75,23 @@
 <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 1.5rem;">
     <div class="metric-card open">
         <div class="metric-label">Defect Baru (Open)</div>
-        <div class="metric-val"><?= $metricOpen ?></div>
+        <div class="metric-val"><?= $metricOpen ?? 0 ?></div>
     </div>
     <div class="metric-card retest">
         <div class="metric-label">Ready for Retest</div>
-        <div class="metric-val"><?= $metricRetest ?></div>
+        <div class="metric-val"><?= $metricRetest ?? 0 ?></div>
     </div>
     <div class="metric-card reopen">
         <div class="metric-label">Gagal Uji (Re-open)</div>
-        <div class="metric-val"><?= $metricReopen ?></div>
+        <div class="metric-val"><?= $metricReopen ?? 0 ?></div>
     </div>
     <div class="metric-card close">
         <div class="metric-label">Selesai (Closed)</div>
-        <div class="metric-val"><?= $metricClose ?></div>
+        <div class="metric-val"><?= $metricClose ?? 0 ?></div>
     </div>
     <div class="metric-card" style="border-top: 3px solid #dc2626;">
         <div class="metric-label">Isu Blocker</div>
-        <div class="metric-val" style="color: #f87171;"><?= $metricBlocker ?></div>
+        <div class="metric-val" style="color: #f87171;"><?= $metricBlocker ?? 0 ?></div>
     </div>
 </div>
 
@@ -84,7 +99,7 @@
 <div class="card">
     <div class="card-header">
         <span class="card-title">Daftar Defect Terkait Aktivitas Harian</span>
-        <span style="font-size: 0.8rem; color: var(--text-dim);"><?= count($defects) ?> Item Tercatat</span>
+        <span style="font-size: 0.8rem; color: var(--text-dim);"><?= count($defects ?? []) ?> Item Tercatat</span>
     </div>
     <div class="table-responsive">
         <table class="table">
