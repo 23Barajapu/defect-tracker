@@ -1,0 +1,23 @@
+# Environment & credentials
+.env
+.env.local
+.env.*.local
+
+# Confidential Docs & PRD
+PRD - Universal Multi-Bank Defect Tracking _ Daily Reporting System.md
+*.PRD.md
+*PRD*.md
+
+# Logs & temp
+*.log
+scratch/
+
+# Uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# IDEs & OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
