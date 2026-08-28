@@ -201,7 +201,7 @@ class ReportController {
         $output = fopen('php://output', 'w');
         // BOM untuk Excel UTF-8
         fputs($output, "\xEF\xBB\xBF");
-        fputcsv($output, ['Ticket Number', 'Bank Klien', 'Project', 'Module', 'Judul Defect', 'Severity', 'Environment', 'Status', 'Reopen Count', 'QC Reporter', 'Dev PIC', 'Created At', 'Updated At']);
+        fputcsv($output, ['Ticket Number', 'Bank Klien', 'Project', 'Module', 'Judul Defect', 'Severity', 'Environment', 'Status', 'Reopen Count', 'QC Reporter', 'Dev PIC', 'Created At', 'Updated At'], ',', '"', '\\');
 
         foreach ($rows as $r) {
             fputcsv($output, [
@@ -218,7 +218,7 @@ class ReportController {
                 $r['dev_name'] ?? '-',
                 $r['created_at'],
                 $r['updated_at']
-            ]);
+            ], ',', '"', '\\');
         }
         fclose($output);
         exit;
