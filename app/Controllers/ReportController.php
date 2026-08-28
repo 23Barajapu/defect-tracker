@@ -2,10 +2,13 @@
 require_once __DIR__ . '/../Core/Auth.php';
 require_once __DIR__ . '/../../config/database.php';
 
+use Auth as AuthClass;
+use Database as DatabaseClass;
+
 class ReportController {
     public function dashboard(): void {
-        Auth::requireAuth();
-        $db = Database::getInstance()->getConnection();
+        AuthClass::requireAuth();
+        $db = DatabaseClass::getInstance()->getConnection();
         $today = date('Y-m-d');
 
         // FR-08: Ringkasan Metrik Harian
@@ -73,8 +76,8 @@ class ReportController {
     }
 
     public function dailyReport(): void {
-        Auth::requireAuth();
-        $db = Database::getInstance()->getConnection();
+        AuthClass::requireAuth();
+        $db = DatabaseClass::getInstance()->getConnection();
 
         $selectedDate = $_GET['date'] ?? date('Y-m-d');
         $clientId = (int)($_GET['client_id'] ?? 0);
@@ -123,8 +126,8 @@ class ReportController {
     }
 
     public function exportPdf(): void {
-        Auth::requireAuth();
-        $db = Database::getInstance()->getConnection();
+        AuthClass::requireAuth();
+        $db = DatabaseClass::getInstance()->getConnection();
 
         $selectedDate = $_GET['date'] ?? date('Y-m-d');
         $clientId = (int)($_GET['client_id'] ?? 0);
@@ -152,7 +155,9 @@ class ReportController {
             $params[] = $clientId;
         }
 
-        $sql .= " ORDER BY d.id DESC";
+        $sql .= " AND (DATE(d.created_at) = ? OR DATE(d.updated_at) = ?) ORDER BY d.id DESC";
+        $params[] = $selectedDate;
+        $params[] = $selectedDate;
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $defects = $stmt->fetchAll();
@@ -161,8 +166,8 @@ class ReportController {
     }
 
     public function exportCsv(): void {
-        Auth::requireAuth();
-        $db = Database::getInstance()->getConnection();
+        AuthClass::requireAuth();
+        $db = DatabaseClass::getInstance()->getConnection();
 
         $selectedDate = $_GET['date'] ?? date('Y-m-d');
         $clientId = (int)($_GET['client_id'] ?? 0);
@@ -182,7 +187,9 @@ class ReportController {
             $sql .= " AND c.id = ? ";
             $params[] = $clientId;
         }
-        $sql .= " ORDER BY d.id DESC";
+        $sql .= " AND (DATE(d.created_at) = ? OR DATE(d.updated_at) = ?) ORDER BY d.id DESC";
+        $params[] = $selectedDate;
+        $params[] = $selectedDate;
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
