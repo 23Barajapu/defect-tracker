@@ -77,7 +77,7 @@ SISTEM-PKL/
 
 - PHP 8.1 or higher (with `pdo_mysql`, `mbstring`, `json`, `curl` extensions enabled)
 - MySQL / MariaDB Server (Port 3306)
-- Apache Web Server (with `mod_rewrite` enabled)
+- Apache Web Server (with `mod_rewrite` enabled) or PHP CLI Built-in server
 - Laragon, XAMPP, or Docker environment
 
 ### 2. Clone Repository
@@ -89,17 +89,66 @@ cd defect-tracker
 
 ### 3. Database Configuration & Migration
 
-Ensure MySQL is running on `127.0.0.1:3306` (default credentials `root` with empty password). To adjust credentials, edit `config/database.php`.
+Ensure MySQL is running on `127.0.0.1:3306` (default credentials: username `root`, empty password). To adjust credentials, edit `config/database.php`.
 
-Run the automated migration and seed runner:
+Run the automated migration and seeder runner:
 
 ```bash
 php database/migrate.php
 ```
 
-### 4. Web Server Routing
+---
 
-- **Laragon / Local Apache**: Point document root to the project directory or access directly via `http://localhost/SISTEM-PKL/public/` (or `http://sistem-pkl.test/`).
+## Running the Application
+
+Choose any of the following methods to start the application:
+
+### Option 1: PHP Built-in Server (Fastest / No Extra Web Server)
+
+Run PHP CLI built-in web server pointing directly to the `public/` folder:
+
+```bash
+php -S localhost:8000 -t public
+```
+
+Access in browser:
+```text
+http://localhost:8000
+```
+
+### Option 2: Laragon (Windows)
+
+1. Clone or place this repository into `C:\laragon\www\SISTEM-PKL`.
+2. Start all services in Laragon (Apache & MySQL).
+3. Access via:
+   - Direct: `http://localhost/SISTEM-PKL/public/`
+   - VirtualHost: `http://sistem-pkl.test/`
+
+### Option 3: XAMPP
+
+1. Place the project into `C:\xampp\htdocs\SISTEM-PKL`.
+2. Start **Apache** and **MySQL** in XAMPP Control Panel.
+3. Access in browser:
+   ```text
+   http://localhost/SISTEM-PKL/public/
+   ```
+
+### Option 4: Docker
+
+Run an isolated MySQL container and start the PHP development server:
+
+```bash
+# 1. Start MySQL Container
+docker run --name mysql-defect -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=sistem_pkl_defect -p 3306:3306 -d mysql:8.0
+
+# 2. Run Database Migration & Seeder
+php database/migrate.php
+
+# 3. Start Server
+php -S 0.0.0.0:8000 -t public
+```
+
+Access at `http://localhost:8000`.
 
 ---
 
