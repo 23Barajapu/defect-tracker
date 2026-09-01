@@ -2,17 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { SeverityBadge } from './SeverityBadge';
-import {
-  Layers,
-  Building2,
-  ExternalLink,
-  User,
-  X,
-  AlertCircle,
-  GripVertical,
-} from 'lucide-react';
 
 interface DefectItem {
   id: number;
@@ -31,10 +21,10 @@ interface DefectItem {
 }
 
 const COLUMNS = [
-  { id: 'Open', title: 'Open', color: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400', countBg: 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border border-blue-500/20' },
-  { id: 'Retesting', title: 'Ready for Retest', color: 'bg-purple-500', text: 'text-purple-600 dark:text-purple-400', countBg: 'bg-purple-500/15 text-purple-600 dark:text-purple-300 border border-purple-500/20' },
-  { id: 'Re-open', title: 'Re-opened', color: 'bg-red-500', text: 'text-red-600 dark:text-red-400', countBg: 'bg-red-500/15 text-red-600 dark:text-red-300 border border-red-500/20' },
-  { id: 'Close', title: 'Verified & Closed', color: 'bg-emerald-500', text: 'text-emerald-600 dark:text-emerald-400', countBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20' },
+  { id: 'Open', title: 'Open', dot: 'bg-blue-500' },
+  { id: 'Retesting', title: 'In Retest', dot: 'bg-purple-500' },
+  { id: 'Re-open', title: 'Re-opened', dot: 'bg-rose-500' },
+  { id: 'Close', title: 'Closed', dot: 'bg-emerald-500' },
 ];
 
 export function KanbanBoard({
@@ -45,7 +35,6 @@ export function KanbanBoard({
   currentUser: any;
 }) {
   const [defects, setDefects] = useState<DefectItem[]>(initialDefects);
-  const [draggedId, setDraggedId] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<{
     type: 'retest' | 'close' | 'reopen';
     defect: DefectItem;
@@ -61,7 +50,6 @@ export function KanbanBoard({
 
   const handleDragStart = (e: React.DragEvent, id: number) => {
     e.dataTransfer.setData('text/plain', String(id));
-    setDraggedId(id);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -74,10 +62,8 @@ export function KanbanBoard({
     const defectId = Number(defectIdStr);
     const defect = defects.find((d) => d.id === defectId);
 
-    setDraggedId(null);
     if (!defect || defect.status === targetStatus) return;
 
-    // RBAC & State Machine Check
     const role = currentUser?.role || 'QC';
 
     if (targetStatus === 'Retesting') {
@@ -110,7 +96,7 @@ export function KanbanBoard({
     if (['LEAD', 'PM'].includes(role)) {
       await submitStatusChange(defect.id, targetStatus, 'Override by management');
     } else {
-      showFeedback('error', `Transisi status ${defect.status} ke ${targetStatus} tidak diperbolehkan`);
+      showFeedback('error', `Transisi status ${defect.status} ke ${targetStatus} tidak diizinkan`);
     }
   };
 
@@ -165,22 +151,19 @@ export function KanbanBoard({
   return (
     <div className="space-y-4">
       {feedbackMsg && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`p-3 rounded-xl text-xs font-bold border flex items-center gap-2 ${
+        <div
+          className={`p-3 rounded text-xs font-medium ${
             feedbackMsg.type === 'error'
-              ? 'bg-red-500/15 border-red-500/30 text-red-600 dark:text-red-400'
-              : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+              ? 'bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300'
+              : 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
           }`}
         >
-          <AlertCircle className="w-4 h-4 shrink-0" />
           {feedbackMsg.text}
-        </motion.div>
+        </div>
       )}
 
-      {/* 4 Kanban Columns Widescreen */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+      {/* 4 Clean Columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
         {COLUMNS.map((col) => {
           const colDefects = defects.filter((d) => d.status === col.id);
           return (
@@ -188,78 +171,65 @@ export function KanbanBoard({
               key={col.id}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, col.id)}
-              className="flex flex-col rounded-2xl glass-panel p-4 border border-slate-200 dark:border-white/10 min-h-[520px]"
+              className="flex flex-col bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-md p-3 min-h-[550px]"
             >
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-white/10 px-1">
+              <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <div className={`w-2.5 h-2.5 rounded-full ${col.color}`} />
-                  <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
+                  <span className={`w-2 h-2 rounded-full ${col.dot}`} />
+                  <span className="font-semibold text-xs text-slate-800 dark:text-slate-200">
                     {col.title}
                   </span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-md text-[11px] font-black ${col.countBg}`}>
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
                   {colDefects.length}
                 </span>
               </div>
 
               {/* Cards Container */}
-              <div className="flex-1 space-y-3 overflow-y-auto">
+              <div className="flex-1 space-y-2.5 overflow-y-auto">
                 {colDefects.map((d) => (
                   <div
                     key={d.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, d.id)}
-                    className="kanban-card p-4 cursor-grab active:cursor-grabbing group"
+                    className="kanban-card p-3 cursor-grab active:cursor-grabbing hover:shadow-sm"
                   >
-                    {/* Header Card */}
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1.5">
-                        <GripVertical className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition" />
-                        <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">
-                          {d.ticket_number}
-                        </span>
-                      </div>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="font-mono text-xs font-semibold text-slate-600 dark:text-slate-400">
+                        {d.ticket_number}
+                      </span>
                       <SeverityBadge severity={d.severity} />
                     </div>
 
-                    {/* Title */}
-                    <h4 className="font-bold text-xs text-slate-900 dark:text-white line-clamp-2 leading-snug mb-3">
+                    <h4 className="font-medium text-xs text-slate-900 dark:text-white leading-snug line-clamp-2 mb-2">
                       {d.title}
                     </h4>
 
-                    {/* Metadata Box */}
-                    <div className="text-[11px] space-y-1.5 mb-3 bg-slate-50 dark:bg-black/25 p-2.5 rounded-xl border border-slate-200/80 dark:border-white/5">
-                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
-                        <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
-                        <span className="truncate">{d.client_name}</span>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 mb-2.5 border-t border-slate-100 dark:border-slate-800/60 pt-1.5">
+                      <div className="truncate">
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{d.client_name}</span> &bull; {d.module_name}
                       </div>
-                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
-                        <Layers className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-                        <span className="truncate">{d.module_name}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
-                        <User className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                        <span className="truncate">Dev: {d.dev_name || 'Belum ada'}</span>
+                      <div className="truncate">
+                        PIC: <span className="font-medium text-slate-700 dark:text-slate-300">{d.dev_name || 'Unassigned'}</span>
                       </div>
                     </div>
 
-                    {/* Footer Card */}
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
                       <span>{new Date(d.created_at).toLocaleDateString('id-ID')}</span>
                       <Link
                         href={`/defects/${d.id}`}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold flex items-center gap-1 hover:underline"
+                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                       >
-                        Detail <ExternalLink className="w-3 h-3" />
+                        Detail &rarr;
                       </Link>
                     </div>
                   </div>
                 ))}
 
                 {colDefects.length === 0 && (
-                  <div className="h-36 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 font-medium">
-                    Tarik tiket ke kolom ini
+                  <div className="h-28 border border-dashed border-slate-200 dark:border-slate-800 rounded flex items-center justify-center text-[11px] text-slate-400">
+                    Tarik tiket ke sini
                   </div>
                 )}
               </div>
@@ -268,73 +238,72 @@ export function KanbanBoard({
         })}
       </div>
 
-      {/* State Machine Transition Modal */}
+      {/* Transition Modal */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="glass-panel bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 p-6 rounded-2xl max-w-lg w-full shadow-2xl"
-          >
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-white/10">
-              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                {activeModal.type === 'retest' && '🚀 Submit Perbaikan (Retesting)'}
-                {activeModal.type === 'close' && '✅ Verifikasi Lolos & Tutup Tiket'}
-                {activeModal.type === 'reopen' && '❌ Retest Gagal (Re-open Tiket)'}
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-lg max-w-md w-full shadow-lg space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-semibold text-sm text-slate-900 dark:text-white">
+                {activeModal.type === 'retest' && 'Submit Perbaikan (Retesting)'}
+                {activeModal.type === 'close' && 'Verifikasi Lolos (Close Defect)'}
+                {activeModal.type === 'reopen' && 'Verifikasi Gagal (Re-open Defect)'}
               </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                <X className="w-5 h-5" />
+              <button
+                onClick={() => setActiveModal(null)}
+                className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-white"
+              >
+                Tutup
               </button>
             </div>
 
-            <div className="space-y-4">
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-xs text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-transparent">
-                Tiket: <strong className="text-blue-600 dark:text-blue-400 font-mono">{activeModal.defect.ticket_number}</strong> &bull; {activeModal.defect.title}
+            <div className="space-y-3">
+              <div className="text-xs text-slate-600 dark:text-slate-400">
+                Tiket: <span className="font-mono font-semibold text-slate-900 dark:text-white">{activeModal.defect.ticket_number}</span> &bull; {activeModal.defect.title}
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
-                  {activeModal.type === 'retest' ? 'Catatan Perbaikan (Fixing Note) *' : 'Catatan Verifikasi / Alasan *'}
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  {activeModal.type === 'retest' ? 'Catatan Perbaikan *' : 'Catatan Verifikasi *'}
                 </label>
                 <textarea
                   rows={3}
                   value={modalForm.notes}
                   onChange={(e) => setModalForm({ ...modalForm, notes: e.target.value })}
                   placeholder="Tuliskan catatan teknis..."
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-3 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                 />
               </div>
 
               {activeModal.type === 'retest' && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Nomor Build</label>
+                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Nomor Build</label>
                     <input
                       type="text"
-                      placeholder="e.g. v2.4.1-rc3"
+                      placeholder="e.g. v2.4.1"
                       value={modalForm.build_number}
                       onChange={(e) => setModalForm({ ...modalForm, build_number: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Commit Hash</label>
+                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Commit Hash</label>
                     <input
                       type="text"
                       placeholder="e.g. 7f9a1c"
                       value={modalForm.commit_hash}
                       onChange={(e) => setModalForm({ ...modalForm, commit_hash: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
               )}
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  className="px-3 py-1.5 rounded text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 >
                   Batal
                 </button>
@@ -344,19 +313,19 @@ export function KanbanBoard({
                     const target = activeModal.type === 'retest' ? 'Retesting' : activeModal.type === 'close' ? 'Close' : 'Re-open';
                     submitStatusChange(activeModal.defect.id, target, modalForm.notes, modalForm.build_number, modalForm.commit_hash);
                   }}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-lg transition ${
+                  className={`px-3.5 py-1.5 rounded text-xs font-medium text-white ${
                     activeModal.type === 'retest'
                       ? 'bg-purple-600 hover:bg-purple-700'
                       : activeModal.type === 'close'
                       ? 'bg-emerald-600 hover:bg-emerald-700'
-                      : 'bg-red-600 hover:bg-red-700'
+                      : 'bg-rose-600 hover:bg-rose-700'
                   }`}
                 >
-                  Simpan Perubahan
+                  Simpan
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

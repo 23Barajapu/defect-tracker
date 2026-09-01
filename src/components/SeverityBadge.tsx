@@ -1,18 +1,30 @@
 import React from 'react';
 
 export function SeverityBadge({ severity }: { severity: string }) {
-  const styles: Record<string, string> = {
-    Blocker: 'bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30',
-    High: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30',
-    Medium: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
-    Low: 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30',
+  const config: Record<string, { bg: string; text: string }> = {
+    Blocker: {
+      bg: 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300',
+      text: 'Blocker',
+    },
+    High: {
+      bg: 'bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300',
+      text: 'High',
+    },
+    Medium: {
+      bg: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
+      text: 'Medium',
+    },
+    Low: {
+      bg: 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400',
+      text: 'Low',
+    },
   };
 
-  const style = styles[severity] || styles.Medium;
+  const item = config[severity] || config.Medium;
 
   return (
-    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black tracking-wider uppercase border ${style}`}>
-      {severity}
+    <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium tracking-tight ${item.bg}`}>
+      {item.text}
     </span>
   );
 }

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { KanbanBoard } from '@/components/KanbanBoard';
-import { Kanban, Plus, Building2, Table } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,55 +40,47 @@ export default async function KanbanPage({
   const clients: any = await query('SELECT id, client_name, client_code FROM clients ORDER BY client_name ASC');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">
-              <Kanban className="w-4 h-4" />
-            </span>
-            <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Interactive Kanban Board
-            </h1>
-          </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-            Tarik kartu defect antar kolom untuk mengubah status alur kerja (State Machine Controlled)
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+            Kanban Board
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Manajemen alur kerja defect perbankan (Open &rarr; Retesting &rarr; Re-open &rarr; Closed)
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <Link
             href="/defects"
-            className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
           >
-            <Table className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> Mode Tabel
+            Tampilan Tabel
           </Link>
 
           {['QC', 'LEAD', 'PM'].includes(currentUser?.role || '') && (
             <Link
               href="/defects/create"
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-xs font-medium text-white transition"
             >
-              <Plus className="w-4 h-4" /> Defect Baru
+              + Defect Baru
             </Link>
           )}
         </div>
       </div>
 
-      {/* Filter by Bank Pills */}
-      <div className="glass-panel p-3 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 font-semibold pl-1">
-          <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-          <span className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Filter Bank:</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
+      {/* Filter by Bank */}
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-slate-500 dark:text-slate-400 font-medium">Filter Bank:</span>
+        <div className="flex flex-wrap gap-1">
           <Link
             href="/defects/kanban"
-            className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+            className={`px-2.5 py-1 rounded text-xs font-medium transition ${
               !clientId
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-transparent'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             Semua Bank
@@ -98,10 +89,10 @@ export default async function KanbanPage({
             <Link
               key={c.id}
               href={`/defects/kanban?client_id=${c.id}`}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+              className={`px-2.5 py-1 rounded text-xs font-medium transition ${
                 clientId === String(c.id)
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-transparent'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {c.client_name}
