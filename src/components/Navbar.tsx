@@ -91,6 +91,7 @@ export function Navbar({ currentUser }: { currentUser: any }) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     className={`px-3 py-1 rounded text-xs font-medium transition ${
                       isActive
                         ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold'
