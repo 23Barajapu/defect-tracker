@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { KanbanBoard } from '@/components/KanbanBoard';
-import { Kanban, ListFilter, Plus, Building2, Table } from 'lucide-react';
+import { Kanban, Plus, Building2, Table, Sparkles } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,20 +45,25 @@ export default async function KanbanPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white light:text-slate-900 tracking-tight flex items-center gap-2.5">
-            <Kanban className="w-6 h-6 text-purple-400" /> Interactive Kanban Board
-          </h1>
-          <p className="text-xs text-slate-400 light:text-slate-500 mt-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="p-1.5 rounded-lg bg-purple-600/20 text-purple-400 border border-purple-500/30">
+              <Kanban className="w-4 h-4" />
+            </span>
+            <h1 className="text-xl font-extrabold text-white light:text-slate-900 tracking-tight">
+              Interactive Kanban Board
+            </h1>
+          </div>
+          <p className="text-xs text-slate-400 light:text-slate-500">
             Tarik kartu defect antar kolom untuk mengubah status alur kerja (State Machine Controlled)
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/defects"
-            className="px-4 py-2 rounded-xl border border-white/10 light:border-slate-200 bg-white/5 hover:bg-white/10 text-xs font-bold text-white light:text-slate-900 transition flex items-center gap-2"
+            className="px-3.5 py-2 rounded-xl border border-white/10 light:border-slate-200 bg-white/5 light:bg-slate-100 hover:bg-white/10 text-xs font-bold text-slate-200 light:text-slate-800 transition flex items-center gap-1.5"
           >
-            <Table className="w-4 h-4 text-blue-400" /> Mode Tabel
+            <Table className="w-3.5 h-3.5 text-blue-400" /> Mode Tabel
           </Link>
 
           {['QC', 'LEAD', 'PM'].includes(currentUser?.role || '') && (
@@ -72,17 +77,19 @@ export default async function KanbanPage({
         </div>
       </div>
 
-      {/* Filter by Bank */}
-      <div className="glass-panel p-3.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold">
-          <Building2 className="w-4 h-4 text-blue-400" />
-          <span>Filter Bank Klien:</span>
+      {/* Filter by Bank Pills */}
+      <div className="glass-panel p-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold pl-1">
+          <Building2 className="w-3.5 h-3.5 text-blue-400" />
+          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Filter Bank:</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           <Link
             href="/defects/kanban"
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              !clientId ? 'bg-blue-600 text-white' : 'bg-white/5 hover:bg-white/10 text-slate-300'
+            className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+              !clientId
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-white/5 hover:bg-white/10 text-slate-300'
             }`}
           >
             Semua Bank
@@ -91,8 +98,10 @@ export default async function KanbanPage({
             <Link
               key={c.id}
               href={`/defects/kanban?client_id=${c.id}`}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                clientId === String(c.id) ? 'bg-blue-600 text-white' : 'bg-white/5 hover:bg-white/10 text-slate-300'
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                clientId === String(c.id)
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-white/5 hover:bg-white/10 text-slate-300'
               }`}
             >
               {c.client_name}
@@ -101,7 +110,7 @@ export default async function KanbanPage({
         </div>
       </div>
 
-      {/* Kanban Board Client Component */}
+      {/* Kanban Board */}
       <KanbanBoard initialDefects={defects} currentUser={currentUser} />
     </div>
   );

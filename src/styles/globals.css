@@ -1,85 +1,104 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg-main: #0a0f1d;
-  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-main: #090d16;
+  --bg-card: rgba(17, 24, 39, 0.7);
   --border-card: rgba(255, 255, 255, 0.08);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --border-card-hover: rgba(59, 130, 246, 0.4);
 }
 
 .light {
   --bg-main: #f8fafc;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --border-card: rgba(0, 0, 0, 0.08);
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --border-card: rgba(226, 232, 240, 1);
+  --border-card-hover: rgba(59, 130, 246, 0.5);
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-main);
-  color: var(--text-primary);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.06) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #f1f5f9;
   min-height: 100vh;
-  overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  letter-spacing: -0.01em;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Glassmorphism Classes */
+.light body {
+  color: #0f172a;
+}
+
+/* Glassmorphism Panel */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-card);
   border-radius: 16px;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-nav {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 13, 22, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .light .glass-nav {
   background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Glowing Interactive Cards */
+.kanban-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light .kanban-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+.kanban-card:hover {
+  border-color: rgba(59, 130, 246, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.25);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.4);
 }
 
-/* Card Glow Effect */
-.glow-card {
-  position: relative;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.glow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 35px -10px rgba(37, 99, 235, 0.25);
-}
-
-/* Code Preview */
 .code-box {
-  font-family: 'Fira Code', monospace;
-  background: #060913;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: #050811;
   color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.2);
   border-radius: 10px;

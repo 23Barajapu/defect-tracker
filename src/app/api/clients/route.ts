@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const clients = await query('SELECT id, client_name, client_code, status FROM clients ORDER BY client_name ASC');
