@@ -3,6 +3,8 @@ import { query, getDb } from '@/lib/db';
 import { Security } from '@/lib/security';
 import { getSession, hasRole } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const clientId = searchParams.get('client_id');

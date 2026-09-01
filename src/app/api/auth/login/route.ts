@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
@@ -30,7 +32,7 @@ export async function POST(req: Request) {
     res.cookies.set('sp_defect_session', encodeURIComponent(JSON.stringify(sessionData)), {
       path: '/',
       httpOnly: false,
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return res;

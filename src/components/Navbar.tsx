@@ -107,7 +107,14 @@ export function Navbar({ currentUser }: { currentUser: any }) {
           <div className="hidden md:flex items-center gap-1 bg-slate-900/60 light:bg-slate-100 p-1 rounded-xl border border-white/5 light:border-slate-200">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+              const isActive =
+                item.href === '/defects'
+                  ? pathname === '/defects' || (pathname.startsWith('/defects/') && !pathname.startsWith('/defects/kanban'))
+                  : item.href === '/dashboard'
+                  ? pathname === '/dashboard'
+                  : pathname === item.href || pathname.startsWith(item.href + '/');
+
+
               return (
                 <Link
                   key={item.href}
