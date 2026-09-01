@@ -19,14 +19,32 @@ export default function RootLayout({
   const currentUser = getSession();
 
   return (
-    <html lang="id" className="dark" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('sp_theme');
+                  if (saved === 'light') {
+                    document.documentElement.classList.remove('dark');
+                  } else {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="antialiased flex flex-col min-h-screen">
         <ThemeProvider>
           <Navbar currentUser={currentUser} />
-          <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-8">
+          <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-6">
             {children}
           </main>
-          <footer className="border-t border-slate-200 dark:border-white/10 py-6 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+          <footer className="border-t border-slate-200 dark:border-slate-800 py-5 px-4 text-center text-xs text-slate-500">
             <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
               <div>
                 <strong className="text-slate-700 dark:text-slate-300">PT Sarana Pactindo</strong> &bull; Universal Multi-Bank Defect Tracking &amp; Daily Reporting Engine

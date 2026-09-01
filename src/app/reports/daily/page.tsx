@@ -1,16 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { query } from '@/lib/db';
-import {
-  FileText,
-  Printer,
-  Download,
-  Building2,
-  Calendar,
-  Layers,
-} from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SeverityBadge } from '@/components/SeverityBadge';
+import { ReportFilterToolbar } from '@/components/ReportFilterToolbar';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,138 +49,101 @@ export default async function DailyReportPage({
   const clients: any = await query('SELECT id, client_name, client_code FROM clients ORDER BY client_name ASC');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" /> Daily QA Defect Report (Cutoff 17:00)
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+            Daily QA Defect Report (Cutoff 17:00)
           </h1>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
-            Rekapitulasi progres pengujian harian multi-bank otomatis PT Sarana Pactindo (FR-08, FR-09)
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Rekapitulasi status pengujian harian otomatis multi-bank PT Sarana Pactindo
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Link
             href={`/reports/pdf?date=${date}${clientId ? `&client_id=${clientId}` : ''}`}
             target="_blank"
-            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition flex items-center gap-2"
+            className="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-xs font-medium text-white transition"
           >
-            <Printer className="w-4 h-4" /> Cetak PDF Resmi (Kop Surat)
+            Cetak PDF Resmi
           </Link>
           <a
             href={`/api/reports/export-csv${clientId ? `?client_id=${clientId}` : ''}`}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-bold text-slate-800 dark:text-white transition flex items-center gap-2 shadow-sm"
+            className="px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
           >
-            <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Export CSV / Excel
+            Export CSV / Excel
           </a>
         </div>
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="glass-panel p-4">
-        <form method="GET" action="/reports/daily" className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-slate-400" />
-            <input
-              type="date"
-              name="date"
-              defaultValue={date}
-              className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 font-bold"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-slate-400" />
-            <select
-              name="client_id"
-              defaultValue={clientId || ''}
-              className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
-            >
-              <option value="">Semua Bank Klien</option>
-              {clients.map((c: any) => (
-                <option key={c.id} value={c.id}>
-                  {c.client_name} ({c.client_code})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="px-5 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold transition"
-          >
-            Tampilkan Laporan
-          </button>
-        </form>
-      </div>
+      {/* Client-side Filter Toolbar */}
+      <ReportFilterToolbar initialDate={date} initialClientId={clientId} clients={clients} />
 
       {/* Metric Cards Summary */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel p-4 border-l-4 border-l-blue-500">
-          <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">New Open ({date})</div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">{newOpenToday}</div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="glass-panel p-3.5">
+          <div className="text-[11px] font-medium text-slate-500 uppercase">New Open ({date})</div>
+          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{newOpenToday}</div>
         </div>
-        <div className="glass-panel p-4 border-l-4 border-l-purple-500">
-          <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Ready For Retest</div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">{readyForRetest}</div>
+        <div className="glass-panel p-3.5">
+          <div className="text-[11px] font-medium text-slate-500 uppercase">Ready For Retest</div>
+          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{readyForRetest}</div>
         </div>
-        <div className="glass-panel p-4 border-l-4 border-l-red-500">
-          <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Re-opened ({date})</div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">{reopenedToday}</div>
+        <div className="glass-panel p-3.5">
+          <div className="text-[11px] font-medium text-slate-500 uppercase">Re-opened ({date})</div>
+          <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">{reopenedToday}</div>
         </div>
-        <div className="glass-panel p-4 border-l-4 border-l-emerald-500">
-          <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Closed ({date})</div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">{closedToday}</div>
+        <div className="glass-panel p-3.5">
+          <div className="text-[11px] font-medium text-slate-500 uppercase">Closed ({date})</div>
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{closedToday}</div>
         </div>
       </div>
 
       {/* Defects Table Report */}
-      <div className="glass-panel p-6">
-        <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-white/10">
-          <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-            Tabel Aktivitas Defect ({defects.length} Tiket)
+      <div className="glass-panel p-4">
+        <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100 dark:border-slate-800">
+          <h3 className="font-semibold text-xs text-slate-800 dark:text-slate-200">
+            Aktivitas Defect ({defects.length} Tiket)
           </h3>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Cutoff Pukul 17:00 WIB</span>
+          <span className="text-[11px] text-slate-400">Cutoff Pukul 17:00 WIB</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 uppercase font-bold text-[10px]">
-                <th className="pb-3">Tiket</th>
-                <th className="pb-3">Bank Klien</th>
-                <th className="pb-3">Proyek &amp; Modul</th>
-                <th className="pb-3">Judul Masalah</th>
-                <th className="pb-3">Severity</th>
-                <th className="pb-3">Status</th>
-                <th className="pb-3">QC Reporter</th>
-                <th className="pb-3">PIC Dev</th>
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-semibold text-[11px]">
+                <th className="pb-2.5">Tiket</th>
+                <th className="pb-2.5">Bank Klien</th>
+                <th className="pb-2.5">Proyek &amp; Modul</th>
+                <th className="pb-2.5">Judul Masalah</th>
+                <th className="pb-2.5">Severity</th>
+                <th className="pb-2.5">Status</th>
+                <th className="pb-2.5">QC Reporter</th>
+                <th className="pb-2.5">PIC Dev</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {defects.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-500 dark:text-slate-400 font-medium">
+                  <td colSpan={8} className="py-8 text-center text-slate-400">
                     Tidak ada aktivitas defect pada tanggal {date}.
                   </td>
                 </tr>
               ) : (
                 defects.map((d: any) => (
-                  <tr key={d.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition">
-                    <td className="py-3 font-mono font-bold text-blue-600 dark:text-blue-400">{d.ticket_number}</td>
-                    <td className="py-3 font-bold text-slate-900 dark:text-white">{d.client_name}</td>
-                    <td className="py-3 text-slate-700 dark:text-slate-300 font-medium">
-                      <div className="flex items-center gap-1">
-                        <Layers className="w-3 h-3 text-purple-500" /> {d.project_name} &rsaquo; {d.module_name}
-                      </div>
+                  <tr key={d.id} className="hover:bg-slate-50 dark:hover:bg-slate-850">
+                    <td className="py-2.5 font-mono font-medium text-slate-700 dark:text-slate-300">{d.ticket_number}</td>
+                    <td className="py-2.5 font-medium text-slate-900 dark:text-white">{d.client_name}</td>
+                    <td className="py-2.5 text-slate-500">
+                      {d.project_name} &bull; {d.module_name}
                     </td>
-                    <td className="py-3 font-bold text-slate-900 dark:text-white max-w-xs truncate">{d.title}</td>
-                    <td className="py-3"><SeverityBadge severity={d.severity} /></td>
-                    <td className="py-3"><StatusBadge status={d.status} reopenCount={d.reopen_count} /></td>
-                    <td className="py-3 text-slate-700 dark:text-slate-300 font-medium">{d.qc_name}</td>
-                    <td className="py-3 text-slate-700 dark:text-slate-300 font-medium">{d.dev_name || '-'}</td>
+                    <td className="py-2.5 font-medium text-slate-900 dark:text-white max-w-xs truncate">{d.title}</td>
+                    <td className="py-2.5"><SeverityBadge severity={d.severity} /></td>
+                    <td className="py-2.5"><StatusBadge status={d.status} reopenCount={d.reopen_count} /></td>
+                    <td className="py-2.5 text-slate-600 dark:text-slate-300">{d.qc_name}</td>
+                    <td className="py-2.5 text-slate-600 dark:text-slate-300">{d.dev_name || '-'}</td>
                   </tr>
                 ))
               )}
