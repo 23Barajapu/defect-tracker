@@ -31,10 +31,10 @@ interface DefectItem {
 }
 
 const COLUMNS = [
-  { id: 'Open', title: 'Open', color: 'bg-blue-500', text: 'text-blue-400', countBg: 'bg-blue-500/20 text-blue-300' },
-  { id: 'Retesting', title: 'Ready for Retest', color: 'bg-purple-500', text: 'text-purple-400', countBg: 'bg-purple-500/20 text-purple-300' },
-  { id: 'Re-open', title: 'Re-opened', color: 'bg-red-500', text: 'text-red-400', countBg: 'bg-red-500/20 text-red-300' },
-  { id: 'Close', title: 'Verified & Closed', color: 'bg-emerald-500', text: 'text-emerald-400', countBg: 'bg-emerald-500/20 text-emerald-300' },
+  { id: 'Open', title: 'Open', color: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400', countBg: 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border border-blue-500/20' },
+  { id: 'Retesting', title: 'Ready for Retest', color: 'bg-purple-500', text: 'text-purple-600 dark:text-purple-400', countBg: 'bg-purple-500/15 text-purple-600 dark:text-purple-300 border border-purple-500/20' },
+  { id: 'Re-open', title: 'Re-opened', color: 'bg-red-500', text: 'text-red-600 dark:text-red-400', countBg: 'bg-red-500/15 text-red-600 dark:text-red-300 border border-red-500/20' },
+  { id: 'Close', title: 'Verified & Closed', color: 'bg-emerald-500', text: 'text-emerald-600 dark:text-emerald-400', countBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20' },
 ];
 
 export function KanbanBoard({
@@ -170,8 +170,8 @@ export function KanbanBoard({
           animate={{ opacity: 1, y: 0 }}
           className={`p-3 rounded-xl text-xs font-bold border flex items-center gap-2 ${
             feedbackMsg.type === 'error'
-              ? 'bg-red-500/15 border-red-500/30 text-red-400'
-              : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+              ? 'bg-red-500/15 border-red-500/30 text-red-600 dark:text-red-400'
+              : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
           }`}
         >
           <AlertCircle className="w-4 h-4 shrink-0" />
@@ -179,8 +179,8 @@ export function KanbanBoard({
         </motion.div>
       )}
 
-      {/* 4 Kanban Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+      {/* 4 Kanban Columns Widescreen */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
         {COLUMNS.map((col) => {
           const colDefects = defects.filter((d) => d.status === col.id);
           return (
@@ -188,13 +188,13 @@ export function KanbanBoard({
               key={col.id}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, col.id)}
-              className="flex flex-col rounded-2xl glass-panel p-3.5 border border-white/10 min-h-[500px]"
+              className="flex flex-col rounded-2xl glass-panel p-4 border border-slate-200 dark:border-white/10 min-h-[520px]"
             >
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 px-1">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-white/10 px-1">
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${col.color}`} />
-                  <span className="font-extrabold text-xs tracking-tight text-white light:text-slate-900">
+                  <div className={`w-2.5 h-2.5 rounded-full ${col.color}`} />
+                  <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
                     {col.title}
                   </span>
                 </div>
@@ -204,19 +204,19 @@ export function KanbanBoard({
               </div>
 
               {/* Cards Container */}
-              <div className="flex-1 space-y-2.5 overflow-y-auto">
+              <div className="flex-1 space-y-3 overflow-y-auto">
                 {colDefects.map((d) => (
                   <div
                     key={d.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, d.id)}
-                    className="kanban-card p-3.5 cursor-grab active:cursor-grabbing group"
+                    className="kanban-card p-4 cursor-grab active:cursor-grabbing group"
                   >
                     {/* Header Card */}
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1">
-                        <GripVertical className="w-3 h-3 text-slate-600 opacity-0 group-hover:opacity-100 transition" />
-                        <span className="font-mono text-[11px] font-bold text-blue-400">
+                      <div className="flex items-center gap-1.5">
+                        <GripVertical className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition" />
+                        <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">
                           {d.ticket_number}
                         </span>
                       </div>
@@ -224,32 +224,32 @@ export function KanbanBoard({
                     </div>
 
                     {/* Title */}
-                    <h4 className="font-bold text-xs text-white light:text-slate-900 line-clamp-2 leading-snug mb-2.5">
+                    <h4 className="font-bold text-xs text-slate-900 dark:text-white line-clamp-2 leading-snug mb-3">
                       {d.title}
                     </h4>
 
-                    {/* Metadata List */}
-                    <div className="text-[11px] text-slate-400 light:text-slate-500 space-y-1 mb-2.5 bg-black/20 light:bg-slate-50 p-2 rounded-lg border border-white/5 light:border-slate-100">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Building2 className="w-3 h-3 text-blue-400 shrink-0" />
+                    {/* Metadata Box */}
+                    <div className="text-[11px] space-y-1.5 mb-3 bg-slate-50 dark:bg-black/25 p-2.5 rounded-xl border border-slate-200/80 dark:border-white/5">
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
+                        <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                         <span className="truncate">{d.client_name}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Layers className="w-3 h-3 text-purple-400 shrink-0" />
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
+                        <Layers className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
                         <span className="truncate">{d.module_name}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 truncate">
-                        <User className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium truncate">
+                        <User className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span className="truncate">Dev: {d.dev_name || 'Belum ada'}</span>
                       </div>
                     </div>
 
                     {/* Footer Card */}
-                    <div className="flex items-center justify-between pt-2 border-t border-white/5 light:border-slate-100 text-[10px] text-slate-500">
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
                       <span>{new Date(d.created_at).toLocaleDateString('id-ID')}</span>
                       <Link
                         href={`/defects/${d.id}`}
-                        className="text-blue-400 group-hover:text-blue-300 font-bold flex items-center gap-1 hover:underline"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold flex items-center gap-1 hover:underline"
                       >
                         Detail <ExternalLink className="w-3 h-3" />
                       </Link>
@@ -258,8 +258,8 @@ export function KanbanBoard({
                 ))}
 
                 {colDefects.length === 0 && (
-                  <div className="h-32 border border-dashed border-white/10 light:border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-500">
-                    Tidak ada tiket
+                  <div className="h-36 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 font-medium">
+                    Tarik tiket ke kolom ini
                   </div>
                 )}
               </div>
@@ -270,30 +270,30 @@ export function KanbanBoard({
 
       {/* State Machine Transition Modal */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-panel bg-slate-900 border border-white/20 p-6 rounded-2xl max-w-lg w-full shadow-2xl"
+            className="glass-panel bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 p-6 rounded-2xl max-w-lg w-full shadow-2xl"
           >
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
-              <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-white/10">
+              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                 {activeModal.type === 'retest' && '🚀 Submit Perbaikan (Retesting)'}
                 {activeModal.type === 'close' && '✅ Verifikasi Lolos & Tutup Tiket'}
                 {activeModal.type === 'reopen' && '❌ Retest Gagal (Re-open Tiket)'}
               </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-4">
-              <div className="p-3 rounded-xl bg-white/5 text-xs text-slate-300">
-                Tiket: <strong className="text-blue-400 font-mono">{activeModal.defect.ticket_number}</strong> &bull; {activeModal.defect.title}
+              <div className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-xs text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-transparent">
+                Tiket: <strong className="text-blue-600 dark:text-blue-400 font-mono">{activeModal.defect.ticket_number}</strong> &bull; {activeModal.defect.title}
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
                   {activeModal.type === 'retest' ? 'Catatan Perbaikan (Fixing Note) *' : 'Catatan Verifikasi / Alasan *'}
                 </label>
                 <textarea
@@ -301,40 +301,40 @@ export function KanbanBoard({
                   value={modalForm.notes}
                   onChange={(e) => setModalForm({ ...modalForm, notes: e.target.value })}
                   placeholder="Tuliskan catatan teknis..."
-                  className="w-full bg-slate-950 border border-white/15 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-3 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                 />
               </div>
 
               {activeModal.type === 'retest' && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Nomor Build</label>
+                    <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Nomor Build</label>
                     <input
                       type="text"
                       placeholder="e.g. v2.4.1-rc3"
                       value={modalForm.build_number}
                       onChange={(e) => setModalForm({ ...modalForm, build_number: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/15 rounded-xl p-2.5 text-xs text-white outline-none focus:border-blue-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Commit Hash</label>
+                    <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Commit Hash</label>
                     <input
                       type="text"
                       placeholder="e.g. 7f9a1c"
                       value={modalForm.commit_hash}
                       onChange={(e) => setModalForm({ ...modalForm, commit_hash: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/15 rounded-xl p-2.5 text-xs text-white outline-none focus:border-blue-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/15 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
               )}
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 >
                   Batal
                 </button>

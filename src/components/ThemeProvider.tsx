@@ -18,12 +18,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
 
   useEffect(() => {
-    const saved = localStorage.getItem('sp_theme') as Theme;
-    if (saved) {
-      setTheme(saved);
-      document.documentElement.classList.toggle('light', saved === 'light');
+    const saved = (localStorage.getItem('sp_theme') as Theme) || 'dark';
+    setTheme(saved);
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('light');
+      document.documentElement.classList.remove('dark');
     }
   }, []);
 
@@ -31,7 +31,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
     localStorage.setItem('sp_theme', next);
-    document.documentElement.classList.toggle('light', next === 'light');
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   };
 
   return (
